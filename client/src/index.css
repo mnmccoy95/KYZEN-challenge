@@ -1,0 +1,64 @@
+html, body {
+  height:100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height:100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+body {
+  background-color: #223D72;
+}
+
+.nav-logo {
+  height: 4rem;
+  width:auto;
+}
+
+.chartsContainer {
+  height: 100%;
+}
+
+.bodyContainer {
+  height: 90%;
+  display: flex;
+  flex-direction: row;
+}
+
+.columnA {
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+  flex-basis: 45%;
+}
+
+.columnB {
+  flex-basis: 55%;
+}
+
+.rowA, .rowB {
+  display: flex;
+  flex-direction: row;
+}
+
+.rowB {
+  margin-top: .2em;
+}
+
+.MuiToolbar-root {
+  border-bottom: 5px solid #ABCC6D!important;
+}
