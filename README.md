@@ -20,3 +20,6 @@ This design is intended for desktop view, but can also be implemented on tablets
 
 
 Please also be aware that the component used for charting, Chart.js, uses a function of total display size, so if you move between displays, the charts may misbehave!
+
+## Implemented Design
+![Image of Current Design Implementation](img/KYZENPreview.PNG)
