@@ -20,25 +20,25 @@ code {
     monospace;
 }
 
+/* Default background color */
 body {
   background-color: #223D72;
 }
 
+/* KYZEN logo resize */
 .nav-logo {
   height: 4rem;
   width:auto;
 }
 
-.chartsContainer {
-  height: 100%;
-}
-
+/* Body container height and flex */
 .bodyContainer {
   height: 90%;
   display: flex;
   flex-direction: row;
 }
 
+/* Left side of display */
 .columnA {
   display: flex;
   flex-direction: row;
@@ -46,28 +46,34 @@ body {
   flex-basis: 45%;
 }
 
+/* Right side of display */
 .columnB {
   flex-basis: 55%;
 }
 
+/* Rows for left side of display */
 .rowA, .rowB {
   display: flex;
   flex-direction: row;
 }
 
+/* Bottom left row */
 .rowB {
   margin-top: .2em;
   height: 32em;
 }
 
+/* Universal Toolbar bottom border */
 .MuiToolbar-root {
   border-bottom: 5px solid #ABCC6D!important;
 }
 
+/* Font size for current value display */
 .currentValue {
   font-size:5em;
 }
 
+/* Current temperature title */
 .tempTitle {
   display: flex;
   flex-direction: row;
@@ -78,6 +84,7 @@ body {
   padding: .5em;
 }
 
+/* Current concentration title */
 .concTitle {
   height: 1.8em;
   padding: .5em;
@@ -85,6 +92,7 @@ body {
   white-space:nowrap;
 }
 
+/* Additional responsive styling for unit change button */
 @media screen and (max-width:1024px){
   .unitButton {
     font-size: .6em!important;
@@ -92,10 +100,12 @@ body {
   }
 }
 
+/* No text wrap on unit change button */
 .unitButton {
   white-space:nowrap;
 }
 
+/* MIN/MAX limit header */
 .limitsTitle {
   display: flex;
   flex-direction: row;
@@ -106,14 +116,17 @@ body {
   padding: .5em;
 }
 
+/* Temporary placeholder div to style limit header */
 .placeholder{
   width:2.5em;
 }
 
+/* entire limit container height definition */
 .limitContainer {
   height: 14em;
 }
 
+/* Container for each min/max display */
 .minMaxContainer {
   display: flex;
   flex-direction: row;
@@ -121,15 +134,18 @@ body {
   padding: .8em;
 }
 
+/* title for each min/max display */
 .minMaxTitle {
   font-size: 1.1em;
   padding: .4em;
 }
 
+/* font size for limit value */
 .limitValue {
   font-size: 3em;
 }
 
+/* MIN or MAX label */
 .minMaxLabel {
   padding: 1em;
   padding-top:1.4em;
@@ -137,30 +153,37 @@ body {
   text-decoration: underline;
 }
 
+/* all children of dataTable font color */
 .dataTable * {
   color: white!important;
 }
 
+/* redefine universal table cell padding */
 .MuiTableCell-sizeSmall {
   padding: 1.05em!important;
 }
 
+/* remove borders of td */
 .MuiTableBody-root:last-child td{
   border: 0!important;
 }
 
+/* redefine table row borders */
 tr {
   border-bottom: 1px solid white;
 }
 
+/* remove bottom border of table's last child */
 tr:last-child {
   border-bottom: 0;
 }
 
+/* define background color for charts to match entire background */
 .concChart {
   background-color: #223D72;
 }
 
+/* flex for all charts */
 .chartContainer {
   display: flex;
   flex-direction: column;
@@ -168,6 +191,7 @@ tr:last-child {
   align-items: center;
 }
 
+/* margin for divs that hold canvases */
 .canvasContainer {
   margin: .5em;
 }
