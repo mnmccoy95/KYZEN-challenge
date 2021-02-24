@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Box from '@material-ui/core/Box';
 import { Data } from "./Data"
 import { ChartData } from "./ChartData"
@@ -10,6 +10,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Chart from "chart.js";
 
 export const Body = () => {
   // const [data, setData] = useState(Data);
@@ -28,6 +29,74 @@ export const Body = () => {
     },
   });
 
+  const temps = ChartData.map((pair) => { return pair.temp })
+  const concs = ChartData.map((pair) => { return pair.conc })
+
+  const concChart = useRef();
+  const tempChart = useRef();
+  const compareChart = useRef();
+
+  useEffect(() => {
+    new Chart(concChart.current, {
+      type: "line",
+      data: {
+        //Bring in data
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        datasets: [
+          {
+            label: "Concentration (%)",
+            data: concs,
+            fill: false,
+          }
+        ],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        }
+      },
+    })
+
+    new Chart(tempChart.current, {
+      type: "line",
+      data: {
+        //Bring in data
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        datasets: [
+          {
+            label: `Temperature ${units}`,
+            data: temps,
+            fill: false,
+          }
+        ],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      },
+    })
+
+    new Chart(compareChart.current, {
+      type: "scatter",
+      data: {
+        datasets: [
+          {
+            label: `Temperature vs. Concentration`,
+            data: ChartData,
+          }
+        ],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              type: 'linear',
+              position: 'bottom'
+            }]
+          }
+        }
+      },
+    })
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -129,9 +198,18 @@ export const Body = () => {
           </Box>
         </Box>
         <Box height="99.5%" className="columnB">
-          <Box height="100%" border={3} borderColor="white" borderRadius={30} color="white" >
-            box to display charts
-        </Box>
+          <Box height="100%" border={3} borderColor="white" borderRadius={30} color="white" className="chartContainer">
+            Historical Data
+            <div className="canvasContainer">
+              <canvas ref={concChart} height="200" width="500" className="concChart" />
+            </div>
+            <div className="canvasContainer">
+              <canvas ref={tempChart} height="200" width="500" className="concChart" />
+            </div>
+            <div className="canvasContainer">
+              <canvas ref={compareChart} height="200" width="500" className="concChart" />
+            </div>
+          </Box>
         </Box>
       </div>
     </ThemeProvider>

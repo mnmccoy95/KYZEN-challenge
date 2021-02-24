@@ -17,3 +17,6 @@ A tablet design with modals, made with engineers in mind, only displays desired 
 More of a dashboard display, design two fits all relevant data on one screen, so users can see what they need without navigation.
 
 This design is intended for desktop view, but can also be implemented on tablets if desired by the customer.
+
+
+Please also be aware that the component used for charting, Chart.js, uses a function of total display size, so if you move between displays, the charts may misbehave!

@@ -156,3 +156,18 @@ tr {
 tr:last-child {
   border-bottom: 0;
 }
+
+.concChart {
+  background-color: white;
+}
+
+.chartContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+}
+
+.canvasContainer {
+  margin: .5em;
+}
