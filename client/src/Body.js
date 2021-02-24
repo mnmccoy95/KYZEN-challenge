@@ -12,10 +12,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Chart from "chart.js";
 
+//----------------------This component defines the entirety of the body display----------------------
+
 export const Body = () => {
+  //-------Used when editing limits and changing unit type-------
+
   // const [data, setData] = useState(Data);
   // const [editing, setEditing] = useState(false);
   const [units, setUnits] = useState("°C");
+
+
+  //-------Used for creating KYZEN Material UI theme-------
 
   const theme = createMuiTheme({
     palette: {
@@ -29,13 +36,17 @@ export const Body = () => {
     },
   });
 
+
+  //-------Data for Chart.js representations-------
   let temps = ChartData.map((pair) => { return pair.temp })
   const concs = ChartData.map((pair) => { return pair.conc })
 
+  //-------References for adding chart components to canvases-------
   const concChart = useRef();
   const tempChart = useRef();
   const compareChart = useRef();
 
+  //-------Predefine possible chart colors-------
   var chartColors = {
     green: 'rgb(171,204,109)',
     blue: 'rgb(34,61,114)',
@@ -43,17 +54,21 @@ export const Body = () => {
     black: 'rgb(0,0,0)'
   };
 
+  //-------set chart default for easy viewing-------
   Chart.defaults.global.defaultFontColor = "#fff";
 
+  //-------scatter data for Chart.js component-------
   let scatterData = ChartData.map((pair) => {
     return { x: pair.temp, y: pair.conc }
   })
 
+  //-------Re-Renders charts based on state-------
   useEffect(() => {
+    //-------Concentration line chart-------
     new Chart(concChart.current, {
       type: "line",
       data: {
-        //Bring in data
+        //-------Temporary arbitrary labels for time based points-------
         labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         datasets: [
           {
@@ -63,18 +78,17 @@ export const Body = () => {
             backgroundColor: chartColors.green,
             data: concs,
             fill: false,
-
           }
         ],
 
       },
+      //-------Customization for chart display-------
       options: {
         responsive: true,
         maintainAspectRatio: false,
         title: {
           display: true,
           text: 'Concentration (%) vs. Time (units)',
-          fontColor: chartColors.white
         },
         legend: {
           display: false,
@@ -88,7 +102,6 @@ export const Body = () => {
             scaleLabel: {
               display: true,
               labelString: 'Time',
-              fontColor: chartColors.white
             }
           }],
           yAxes: [{
@@ -99,17 +112,17 @@ export const Body = () => {
             scaleLabel: {
               display: true,
               labelString: 'Concentration',
-              fontColor: chartColors.white
             },
           }]
         }
       }
     })
 
+    //-------Temperature line chart-------
     new Chart(tempChart.current, {
       type: "line",
       data: {
-        //Bring in data
+        //-------Temporary arbitrary labels for time based points-------
         labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         datasets: [
           {
@@ -122,13 +135,13 @@ export const Body = () => {
           }
         ],
       },
+      //-------Customization for chart display-------
       options: {
         responsive: true,
         maintainAspectRatio: false,
         title: {
           display: true,
           text: `Temperature ${units} vs. Time (units)`,
-          fontColor: chartColors.white
         },
         legend: {
           display: false
@@ -142,7 +155,6 @@ export const Body = () => {
             scaleLabel: {
               display: true,
               labelString: 'Time',
-              fontColor: chartColors.white
             }
           }],
           yAxes: [{
@@ -153,13 +165,13 @@ export const Body = () => {
             scaleLabel: {
               display: true,
               labelString: 'Temperature',
-              fontColor: chartColors.white
             },
           }]
         }
       }
     })
 
+    //-------Concentration vs. Temperature Scatter Chart-------
     new Chart(compareChart.current, {
       type: "scatter",
       data: {
@@ -173,6 +185,7 @@ export const Body = () => {
           }
         ],
       },
+      //-------Customization for chart display-------
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -192,7 +205,6 @@ export const Body = () => {
             scaleLabel: {
               display: true,
               labelString: 'Temperature',
-              fontColor: chartColors.white
             }
           }],
           yAxes: [{
@@ -203,7 +215,6 @@ export const Body = () => {
             scaleLabel: {
               display: true,
               labelString: 'Concentration',
-              fontColor: chartColors.white
             },
           }]
         }
@@ -211,10 +222,18 @@ export const Body = () => {
     })
   }, [])
 
+
+  //-------HTML Return-------
   return (
     <ThemeProvider theme={theme}>
       <div className="bodyContainer">
+        {
+          //-------Entire left side of display-------
+        }
         <Box height="100%" className="columnA">
+          {
+            //-------Current reading containers-------
+          }
           <Box width="100%" className="rowA">
             <Box width="49.5%" height="99%" border={3} borderColor="white" borderRadius={30} color="white" >
               <Box borderBottom={1} className="concTitle">Concentration (by vol.)</Box>
@@ -234,8 +253,14 @@ export const Body = () => {
               </Box>
             </Box>
           </Box>
+          {
+            //-------Limit box and data table-------
+          }
           <Box width="100%" className="rowB">
             <Box width="49.5%" height="99%" border={3} borderColor="white" borderRadius={30} color="white" >
+              {
+                //-------Limits header-------
+              }
               <Box borderBottom={1} className="limitsTitle">
                 <div className="placeholder"></div>
                 <div>LIMITS</div>
@@ -243,6 +268,9 @@ export const Body = () => {
                   EDIT
                 </Button>
               </Box>
+              {
+                //-------Concentration limit container-------
+              }
               <Box border={2} borderColor="white" borderRadius={30} color="white" className="limitContainer">
                 <Box borderBottom={2} borderColor="white" className="minMaxTitle">
                   Concentration (%)
@@ -264,6 +292,9 @@ export const Body = () => {
                   </div>
                 </Box>
               </Box>
+              {
+                //-------Temperature limit container-------
+              }
               <Box border={2} borderColor="white" borderRadius={30} color="white" className="limitContainer">
                 <Box borderBottom={2} borderColor="white" className="minMaxTitle">
                   Temperature ({units} )
@@ -286,6 +317,9 @@ export const Body = () => {
                 </Box>
               </Box>
             </Box>
+            {
+              //-------Data table-------
+            }
             <Box width="49.5%" border={3} borderColor="white" borderRadius={30} color="white" >
               <TableContainer className="dataTable">
                 <Table size="small">
@@ -310,15 +344,27 @@ export const Body = () => {
             </Box>
           </Box>
         </Box>
+        {
+          //-------Entire left side of display-------
+        }
         <Box height="99.5%" className="columnB">
           <Box height="100%" border={3} borderColor="white" borderRadius={30} color="white" className="chartContainer">
             Historical Data
+            {
+              //-------Concentration chart-------
+            }
             <div className="canvasContainer">
               <canvas ref={concChart} height="200" width="500" className="concChart" />
             </div>
+            {
+              //-------Temperature chart-------
+            }
             <div className="canvasContainer">
               <canvas ref={tempChart} height="200" width="500" className="concChart" />
             </div>
+            {
+              //-------Scatter chart-------
+            }
             <div className="canvasContainer">
               <canvas ref={compareChart} height="200" width="500" className="concChart" />
             </div>
