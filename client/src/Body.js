@@ -29,12 +29,25 @@ export const Body = () => {
     },
   });
 
-  const temps = ChartData.map((pair) => { return pair.temp })
+  let temps = ChartData.map((pair) => { return pair.temp })
   const concs = ChartData.map((pair) => { return pair.conc })
 
   const concChart = useRef();
   const tempChart = useRef();
   const compareChart = useRef();
+
+  var chartColors = {
+    green: 'rgb(171,204,109)',
+    blue: 'rgb(34,61,114)',
+    white: 'rgb(255, 255, 255)',
+    black: 'rgb(0,0,0)'
+  };
+
+  Chart.defaults.global.defaultFontColor = "#fff";
+
+  let scatterData = ChartData.map((pair) => {
+    return { x: pair.temp, y: pair.conc }
+  })
 
   useEffect(() => {
     new Chart(concChart.current, {
@@ -44,16 +57,53 @@ export const Body = () => {
         labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         datasets: [
           {
-            label: "Concentration (%)",
+            type: 'line',
+            label: `Concentration (%)`,
+            borderColor: chartColors.green,
+            backgroundColor: chartColors.green,
             data: concs,
             fill: false,
+
           }
         ],
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-        }
+
       },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+          display: true,
+          text: 'Concentration (%) vs. Time (units)',
+          fontColor: chartColors.white
+        },
+        legend: {
+          display: false,
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            gridLines: {
+              color: "#FFFFFF"
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Time',
+              fontColor: chartColors.white
+            }
+          }],
+          yAxes: [{
+            display: true,
+            gridLines: {
+              color: "#FFFFFF"
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Concentration',
+              fontColor: chartColors.white
+            },
+          }]
+        }
+      }
     })
 
     new Chart(tempChart.current, {
@@ -63,16 +113,51 @@ export const Body = () => {
         labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         datasets: [
           {
+            type: 'line',
             label: `Temperature ${units}`,
+            borderColor: chartColors.green,
+            backgroundColor: chartColors.green,
             data: temps,
             fill: false,
           }
         ],
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
       },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+          display: true,
+          text: `Temperature ${units} vs. Time (units)`,
+          fontColor: chartColors.white
+        },
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            gridLines: {
+              color: "#FFFFFF"
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Time',
+              fontColor: chartColors.white
+            }
+          }],
+          yAxes: [{
+            display: true,
+            gridLines: {
+              color: "#FFFFFF"
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Temperature',
+              fontColor: chartColors.white
+            },
+          }]
+        }
+      }
     })
 
     new Chart(compareChart.current, {
@@ -81,20 +166,48 @@ export const Body = () => {
         datasets: [
           {
             label: `Temperature vs. Concentration`,
-            data: ChartData,
+            borderColor: chartColors.green,
+            backgroundColor: chartColors.green,
+            data: scatterData,
+            pointRadius: 5,
           }
         ],
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            xAxes: [{
-              type: 'linear',
-              position: 'bottom'
-            }]
-          }
-        }
       },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+          display: true,
+          text: `Concentration (%) vs. Temperature ${units}`
+        },
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            gridLines: {
+              color: "#FFFFFF"
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Temperature',
+              fontColor: chartColors.white
+            }
+          }],
+          yAxes: [{
+            display: true,
+            gridLines: {
+              color: "#FFFFFF"
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Concentration',
+              fontColor: chartColors.white
+            },
+          }]
+        }
+      }
     })
   }, [])
 
