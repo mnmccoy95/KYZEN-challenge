@@ -15,15 +15,18 @@ import Chart from "chart.js";
 //----------------------This component defines the entirety of the body display----------------------
 
 export const Body = () => {
+
   //-------Used when editing limits and changing unit type-------
-
-  // const [data, setData] = useState(Data);
-  // const [editing, setEditing] = useState(false);
+  const [data, setData] = useState(Data);
+  const [editing, setEditing] = useState(false);
   const [units, setUnits] = useState("°C");
-
+  const [chartData, setChartData] = useState(ChartData);
+  let [tempUp, setTempUp] = useState(data.TempLimit.Upper);
+  let [tempDown, setTempDown] = useState(data.TempLimit.Lower);
+  let [concUp, setConcUp] = useState(data.ConcLimit.Upper);
+  let [concDown, setConcDown] = useState(data.ConcLimit.Lower);
 
   //-------Used for creating KYZEN Material UI theme-------
-
   const theme = createMuiTheme({
     palette: {
       primary: {
@@ -38,8 +41,8 @@ export const Body = () => {
 
 
   //-------Data for Chart.js representations-------
-  let temps = ChartData.map((pair) => { return pair.temp })
-  const concs = ChartData.map((pair) => { return pair.conc })
+  const temps = chartData.map((pair) => { return pair.temp })
+  const concs = chartData.map((pair) => { return pair.conc })
 
   //-------References for adding chart components to canvases-------
   const concChart = useRef();
@@ -58,9 +61,88 @@ export const Body = () => {
   Chart.defaults.global.defaultFontColor = "#fff";
 
   //-------scatter data for Chart.js component-------
-  let scatterData = ChartData.map((pair) => {
+  let scatterData = chartData.map((pair) => {
     return { x: pair.temp, y: pair.conc }
   })
+
+
+  //-------Function for when user clicks unit change-------
+  //-------Not the dryest code, trust me, I know-------
+  const tempConvert = () => {
+    if (units === "°C") {
+      const newData = data;
+      newData.Temp = Math.round((newData.Temp * (9 / 5)) + 32);
+      newData.TempLimit.Upper = Math.round((newData.TempLimit.Upper * (9 / 5)) + 32);
+      newData.TempLimit.Lower = Math.round((newData.TempLimit.Lower * (9 / 5)) + 32);
+      const newChartData = chartData;
+      for (const pair of newChartData) {
+        pair.temp = Math.round((pair.temp * (9 / 5)) + 32);
+      }
+      setChartData(newChartData)
+      setData(newData);
+      setConcDown(data.ConcLimit.Lower);
+      setConcUp(data.ConcLimit.Upper);
+      setTempDown(data.TempLimit.Lower);
+      setTempUp(data.TempLimit.Upper);
+      setUnits("°F")
+    } else {
+      const newData = data;
+      newData.Temp = Math.round((newData.Temp - 32) * (5 / 9));
+      newData.TempLimit.Upper = Math.round((newData.TempLimit.Upper - 32) * (5 / 9));
+      newData.TempLimit.Lower = Math.round((newData.TempLimit.Lower - 32) * (5 / 9));
+      const newChartData = chartData;
+      for (const pair of newChartData) {
+        pair.temp = Math.round((pair.temp - 32) * (5 / 9));
+      }
+      setChartData(newChartData)
+      setData(newData);
+      setConcDown(data.ConcLimit.Lower);
+      setConcUp(data.ConcLimit.Upper);
+      setTempDown(data.TempLimit.Lower);
+      setTempUp(data.TempLimit.Upper);
+      setUnits("°C")
+    }
+  }
+
+  //-------Check if temperature is in range-------
+  const tempInRange = () => {
+    if (data.Temp > data.TempLimit.Upper || data.Temp < data.TempLimit.Lower) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  //-------Check if concentration is in range-------
+  const concInRange = () => {
+    if (data.Conc > data.ConcLimit.Upper || data.Conc < data.ConcLimit.Lower) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  //-------Change state if/when user clicks edit/save button-------
+  const userEdit = () => {
+    if (editing === false) {
+      setEditing(true)
+    } else {
+      setEditing(false)
+      data.TempLimit.Upper = tempUp;
+      data.TempLimit.Lower = tempDown;
+      data.ConcLimit.Upper = concUp;
+      data.ConcLimit.Lower = concDown;
+    }
+  }
+
+  //-------Change state if/when user clicks cancel button-------
+  const cancelEditing = () => {
+    setEditing(false)
+    setTempUp(data.TempLimit.Upper);
+    setTempDown(data.TempLimit.Lower);
+    setConcUp(data.ConcLimit.Upper);
+    setConcDown(data.ConcLimit.Lower);
+  }
 
   //-------Re-Renders charts based on state-------
   useEffect(() => {
@@ -220,7 +302,10 @@ export const Body = () => {
         }
       }
     })
-  }, [])
+    //-------Check if values are in range on each render-------
+    tempInRange();
+    concInRange();
+  }, [units])
 
 
   //-------HTML Return-------
@@ -237,20 +322,23 @@ export const Body = () => {
           <Box width="100%" className="rowA">
             <Box width="49.5%" height="99%" border={3} borderColor="white" borderRadius={30} color="white" >
               <Box borderBottom={1} className="concTitle">Concentration (by vol.)</Box>
-              <Box className="currentValue" >
-                {Data.Conc}%
+              <Box className="currentValue currentConc" >
+                {data.Conc}%
               </Box>
+              {concInRange() ? null : <div className="warning">!! NOT IN RANGE !!</div>}
             </Box>
             <Box width="49.5%" height="99%" border={3} borderColor="white" borderRadius={30} color="white" >
               <Box borderBottom={1} className="tempTitle">
                 <div>Temperature</div>
-                <Button variant="contained" color="secondary" disableElevation className="unitButton">
+                <Button variant="contained" color="secondary" disableElevation className="unitButton"
+                  onClick={() => { tempConvert() }}>
                   UNIT CHANGE
                 </Button>
               </Box>
-              <Box className="currentValue" >
-                {Data.Temp}{units}
+              <Box className="currentValue currentTemp" >
+                {data.Temp}{units}
               </Box>
+              {tempInRange() ? null : <div className="warning">!! NOT IN RANGE !!</div>}
             </Box>
           </Box>
           {
@@ -262,10 +350,15 @@ export const Body = () => {
                 //-------Limits header-------
               }
               <Box borderBottom={1} className="limitsTitle">
-                <div className="placeholder"></div>
+                {editing ? <Button variant="contained" color="secondary" disableElevation className="cancelLimitBtn"
+                  onClick={() => { cancelEditing() }}>
+                  CANCEL
+                </Button> :
+                  <div className="placeholder"></div>}
                 <div>LIMITS</div>
-                <Button variant="contained" color="secondary" disableElevation className="editLimitBtn">
-                  EDIT
+                <Button variant="contained" color="secondary" disableElevation className="editLimitBtn"
+                  onClick={() => { userEdit() }}>
+                  {editing ? "SAVE" : "EDIT"}
                 </Button>
               </Box>
               {
@@ -280,16 +373,24 @@ export const Body = () => {
                     MIN
                   </div>
                   <div className="limitValue">
-                    {Data.ConcLimit.Lower}
+                    {editing ? concDown : data.ConcLimit.Lower}
                   </div>
+                  {editing ? <div className="buttonContainer"><Button variant="contained" color="secondary" disableElevation
+                    onClick={() => { setConcDown(concDown + 1) }}><i class="fas fa-arrow-up"></i></Button>
+                    <Button variant="contained" color="secondary" disableElevation
+                      onClick={() => { setConcDown(concDown - 1) }}><i class="fas fa-arrow-down"></i></Button></div> : <div className="placeHolderTwo"></div>}
                 </Box>
                 <Box className="minMaxContainer">
                   <div className="minMaxLabel">
                     MAX
                   </div>
                   <div className="limitValue">
-                    {Data.ConcLimit.Upper}
+                    {editing ? concUp : data.ConcLimit.Upper}
                   </div>
+                  {editing ? <div className="buttonContainer"><Button variant="contained" color="secondary" disableElevation
+                    onMouseUp={() => { setConcUp(concUp + 1) }}><i class="fas fa-arrow-up"></i></Button>
+                    <Button variant="contained" color="secondary" disableElevation
+                      onClick={() => { setConcUp(concUp - 1) }}><i class="fas fa-arrow-down"></i></Button></div> : <div className="placeHolderTwo"></div>}
                 </Box>
               </Box>
               {
@@ -304,16 +405,24 @@ export const Body = () => {
                     MIN
                   </div>
                   <div className="limitValue">
-                    {Data.TempLimit.Lower}
+                    {editing ? tempDown : data.TempLimit.Lower}
                   </div>
+                  {editing ? <div className="buttonContainer"><Button variant="contained" color="secondary" disableElevation
+                    onClick={() => { setTempDown(tempDown + 1) }}><i class="fas fa-arrow-up"></i></Button>
+                    <Button variant="contained" color="secondary" disableElevation
+                      onClick={() => { setTempDown(tempDown - 1) }}><i class="fas fa-arrow-down"></i></Button></div> : <div className="placeHolderTwo"></div>}
                 </Box>
                 <Box className="minMaxContainer">
                   <div className="minMaxLabel">
                     MAX
                   </div>
                   <div className="limitValue">
-                    {Data.TempLimit.Upper}
+                    {editing ? tempUp : data.TempLimit.Upper}
                   </div>
+                  {editing ? <div className="buttonContainer"><Button variant="contained" color="secondary" disableElevation
+                    onClick={() => { setTempUp(tempUp + 1) }}><i class="fas fa-arrow-up"></i></Button>
+                    <Button variant="contained" color="secondary" disableElevation
+                      onClick={() => { setTempUp(tempUp - 1) }}><i class="fas fa-arrow-down"></i></Button></div> : <div className="placeHolderTwo"></div>}
                 </Box>
               </Box>
             </Box>
